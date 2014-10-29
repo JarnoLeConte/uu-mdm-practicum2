@@ -1,79 +1,146 @@
+# igraph library
+library(igraph)
 
-# graph represented by an adjency matrix
-adjmatrix <- matrix(0,6,6)
+# model
+data <- c(3,17,4,2,176,197,293,23)
+margin <- c(2,2,2)
+arr <- array(data, margin)
+table <- as.table(arr)
+
+# graph
+size <- length(dim(table))
+adjm <- matrix(0, size, size)
+
+# test search
+test <- function() {  
+  gm.search(table, adjm, forward=T, backward=T, score="aic") 
+} 
 
 
-
-
-
-gm.search = function(table, graph, forward, backward, score) {
-  # XXX
+gm.search = function(table, adjm, forward, backward, score) {
   
-  # return
-#   list(
-#     $model = list(c(1,2,3), c(1,2,3)), 
-#     $score = "bic", 
-#     $trace = data.frame(), 
-#     $call = match.call()
-#   )
+  # XXX hack to explicit cast adjm to be an adjeceny matrix
+  # which will not be flatten by the apply function
+  adjm <- get.adjacency(graph.adjacency(adjm, mode="undirected"))
+    
+  # generate neighbor models. 
+  neighbors <- gm.neighbors(adjm, forward, backward)
+  
+  # calculate AIC or BIC scores of the neighbors
+  neighbor.scores <- sapply(neighbors, function(adjm) { gm.score(table, adjm, score) });
+  
+  neighbor.scores
 }
 
-iteration <- function() {
+# generate neighbor models by adding or removing edges to the given graph
+gm.neighbors <- function(adjm, forward, backward) {
   
+  # determine which edges need to be considered in order to create new neighbor models. 
+  # Either add or remove an edge from the graph.
+  # i.e. edges are determined by all combinations of 2 vertices 
+  considerEdges <- combn(1:nrow(adjm), 2)
   
+  # generate neighbor models by (possibly) adding or removing a single edge.
+  neighbors <- apply(considerEdges, 2, function(e) { graph.edge.flip(adjm, e, forward, backward) })
+  
+  # filter the neighbor models which are unmodified, 
+  # i.e. models which are the same a the current model 
+  neighbors <- Filter(function(m) { !identical(adjm, m) }, neighbors)
+  
+  # only allow chordal graphs, so remove the models which don't satisfy this constraint
+  # i.e. graphs not containing chordless cycles of length > 3
+  neighbors <- Filter(graph.is.chordal, neighbors)
+  
+  neighbors
 }
 
-model.aic <- function(model) {
+# calculate log linear model and score by AIC or BIC
+gm.score <- function(table, adjm, score) { 
+  
+  # find cliques
+  cliques <- graph.find.cliques(c(), 1:nrow(adjm), c(), adjm, list())
+  
+  # log linear
+  model <- loglin(table, cliques)
+  
+  # score AIC or BIC
+  if (score == "aic") gm.score.aic(model) else gm.score.bic(model)
+}
+
+# calculate AIC score of a model
+gm.score.aic <- function(model) {
   dev <- model$lrt              # deviance
   dim <- length(dim(model$fit)) # number of parameters (u-terms)
   dev + 2*dim                   # AIC
 }
 
+# calculate BIC score of a model
+gm.score.bic <- function(model) {
+  # XXX todo
+}
 
 
 
-# igraph library
-
-library(igraph)
-
-# create initial graph from adjecency matrix
-graph <- graph.adjacency(adjmatrix, mode="undirected")
-
-# add edges (cycle + diagonal)
-graph <- graph + edge(1,2)
-graph <- graph + edge(2,3)
-graph <- graph + edge(3,4)
-graph <- graph + edge(4,1)
-#graph <- graph + edge(2,4)
-
-# check absence of chordless cycles with length > 3
-is.chordal(graph)$chordal  
-
-adjm <- get.adjacency(graph, type="both")
-
-# determine which edges need to be considered in order to create new neighbor models. 
-# Either add or remove an edge from the graph.
-# i.e. edges are determined by all combinations of 2 vertices 
-considerEdges <- combn(1:nrow(adjm), 2)
-
-# generate all possible neighbor models by adding or removing a single edge.
-neighbors <- apply(considerEdges, 2, function(e) {
+# modify the given edge by adding or removing it from the adjeceny matrix.
+# adding the edge is only be done when the forward flag is True
+# removing the edge is only be done when the backward flag is True
+# if the flag don't matches, the original adjeceny matrix is returned
+graph.edge.flip <- function(adjm, edge, forward, backward) {
   
-  # remove or add the current edge from the adjeceny matrix by flipping the bit.
-  adjm[e[[1]],e[[2]]] = 1 - adjm[e[[1]],e[[2]]]
+  # check if edge already exists in the graph
+  exists <- adjm[edge[[1]],edge[[2]]] == 1
   
-  # return a new adjecency matrix containing the modified edge
+  # remove or add the current edge from the adjeceny matrix by flipping the bit
+  if ((forward && !exists) || (backward && exists)) {
+    adjm[edge[[1]],edge[[2]]] = 1 - exists
+  } 
+  
+  # return a (possibly modified) adjecency matrix
   adjm
-})
+}
 
-# only allow chordal graphs
-# i.e. graphs not containing chordless cycles of length > 3
-neighbors <- Filter(function(adjm) { 
-  graph <- graph.adjacency(adjm, mode="undirected"); 
-  is.chordal(graph)$chordal
-}, neighbors)
-
-# calculate AIC of neighbors
-aics <- sapply(neighbors, function(model) {
+# check if the graph is chordal
+# i.e. check absence of chordless cycles with length > 3
+graph.is.chordal <- function(adjm) {
   
-});
+  # transform adjeceny matrix to real graph
+  graph <- graph.adjacency(adjm, mode="undirected")
+  
+  # check absence of chordless cycles with length > 3
+  is.chordal(graph)$chordal  
+}
+
+# given code to find cliques in the graph
+graph.find.cliques <- function (R,P,X,graph,cliques) {
+  
+  # helper function
+  neighbors <- function (graph,node) 
+  {
+    nnodes <- dim(graph)[2]
+    (1:nnodes)[graph[node,]==1]
+  }
+  
+  # helper function
+  post.process <- function (cliques) 
+  {
+    unique(lapply(cliques,sort))
+  }
+  
+  if (length(P)==0 & length(X)==0) {cliques <- list(R)}
+  else {
+    pivot <- P[sample(length(P),1)]
+    for(i in 1:length(P)){
+      pivot.nb <- neighbors(graph,pivot)
+      if(!is.element(P[i],pivot.nb)){
+        P.temp <- setdiff(P,P[i])
+        R.new <- union(R,P[i])
+        P.new <- intersect(P.temp,neighbors(graph,P[i]))
+        X.new <- intersect(X,neighbors(graph,P[i]))
+        cliques <- c(cliques,find.cliques(R.new,P.new,X.new,graph,list()))
+        X <- union(X,P[i])}
+    }}
+  cliques
+}
+
+
+
