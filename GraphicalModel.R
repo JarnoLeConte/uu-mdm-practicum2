@@ -13,7 +13,7 @@ adjm <- matrix(0, size, size)
 
 # test search
 test <- function() {  
-  gm.search(table, adjm, forward=T, backward=T, score="aic") 
+  gm.search(table, adjm, forward=T, backward=T, score="bic") 
 } 
 
 
@@ -33,7 +33,7 @@ gm.search = function(table, adjm, forward, backward, score) {
   neighbor.scores <- sapply(neighbors, function(adjm) { 
     list(adjm = adjm, score = gm.score(table, adjm, score))
   });
-  
+
   # bets neighbor score
   best.neighbor <- neighbor.scores[,which.min(neighbor.scores[2,])]
   
@@ -87,12 +87,18 @@ gm.score.aic <- function(table, model) {
   maxDF    <- prod(dim(table))
   uterms   <- maxDF - model$df   # number of parameters (u-terms)
 
-  deviance + 2*uterms            # AIC
+  deviance + 2 * uterms          # AIC
 }
 
 # calculate BIC score of a model
 gm.score.bic <- function(table, model) {
-  # XXX todo
+  deviance <- model$lrt          # deviance
+  
+  maxDF    <- prod(dim(table))
+  uterms   <- maxDF - model$df   # number of parameters (u-terms)
+  N        <- sum(table)         # number of observations
+  
+  deviance + log(N) * uterms   # AIC
 }
 
 
