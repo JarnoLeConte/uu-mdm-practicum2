@@ -74,21 +74,24 @@ gm.score <- function(table, adjm, score) {
   cliques <- graph.find.cliques(c(), 1:nrow(adjm), c(), adjm, list())
   
   # log linear
-  model <- loglin(table, cliques)
+  model <- loglin(table, cliques, print=T, iter=100)
   
   # score AIC or BIC
-  if (score == "aic") gm.score.aic(model) else gm.score.bic(model)
+  if (score == "aic") gm.score.aic(table, model) else gm.score.bic(table, model)
 }
 
 # calculate AIC score of a model
-gm.score.aic <- function(model) {
-  dev <- model$lrt              # deviance
-  dim <- length(dim(model$fit)) # number of parameters (u-terms)
-  dev + 2*dim                   # AIC
+gm.score.aic <- function(table, model) {
+  deviance <- model$lrt          # deviance
+
+  maxDF    <- prod(dim(table))
+  uterms   <- maxDF - model$df   # number of parameters (u-terms)
+
+  deviance + 2*uterms            # AIC
 }
 
 # calculate BIC score of a model
-gm.score.bic <- function(model) {
+gm.score.bic <- function(table, model) {
   # XXX todo
 }
 
