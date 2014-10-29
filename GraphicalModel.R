@@ -20,16 +20,29 @@ test <- function() {
 gm.search = function(table, adjm, forward, backward, score) {
   
   # XXX hack to explicit cast adjm to be an adjeceny matrix
-  # which will not be flatten by the apply function
+  # which will not be flatten in the apply function
   adjm <- get.adjacency(graph.adjacency(adjm, mode="undirected"))
+  
+  # calculate AIC or BIC score of the current model
+  current.score <- gm.score(table, adjm, score)
     
   # generate neighbor models. 
   neighbors <- gm.neighbors(adjm, forward, backward)
   
   # calculate AIC or BIC scores of the neighbors
-  neighbor.scores <- sapply(neighbors, function(adjm) { gm.score(table, adjm, score) });
+  neighbor.scores <- sapply(neighbors, function(adjm) { 
+    list(adjm = adjm, score = gm.score(table, adjm, score))
+  });
   
-  neighbor.scores
+  # bets neighbor score
+  best.neighbor <- neighbor.scores[,which.min(neighbor.scores[2,])]
+  
+  # if a neighbor has a better score, recurse on it!
+  if (best.neighbor$score < current.score) {
+    gm.search(table, best.neighbor$adjm, forward, backward, score)
+  } else {
+    adjm  # DONE! return current model
+  }  
 }
 
 # generate neighbor models by adding or removing edges to the given graph
