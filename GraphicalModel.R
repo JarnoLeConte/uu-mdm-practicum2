@@ -1,22 +1,55 @@
 # igraph library
 library(igraph)
 
-# model
+# observed data model
 data <- c(3,17,4,2,176,197,293,23)
 margin <- c(2,2,2)
 arr <- array(data, margin)
-table <- as.table(arr)
+model <- as.table(arr)
 
-# graph
-size <- length(dim(table))
-adjm <- matrix(0, size, size)
 
 # test search
 test <- function() {  
-  gm.search(table, adjm, forward=T, backward=T, score="bic") 
+  gm.restart(5, 0.5, 2, model, forward=T, backward=T, score="aic") 
 } 
 
+# call gm.search nstart times with different initial matrices
+# this will give reliable results instead of calling gm.search once.
+gm.restart = function(nstart, prob, seed, table, forward, backward, score) {
+  
+  # col/row size
+  size <- length(dim(table))
+  
+  # generate symmetric matrix with initial edges given by the probability 'prob'
+  matrix.rand <- function(i) {
+    set.seed(seed + i)
+    elms <- sample(c(0,1), size=size*size, replace=T, prob=c(1-prob, prob))
+    m <- matrix(elms, size, size)
+    m[upper.tri(m)] <- m[lower.tri(m)]
+    m
+  }
+  
+  # single call to gm.search by passing a new generated graph, which is represented 
+  # by an adjeceny matrix representing the initial edges
+  search <- function(i) {
+    adjm <- matrix.rand(i)
+    gm.search(table, adjm, forward, backward, score)
+  }
+  
+  # multiple calls to gm.search, each time with a new generated matrix
+  searches <- sapply(1:nstart, search)
+  
+  # find best search
+  best.search <- searches[,which.min(searches[2,])]
+  
+  # return best search
+  list(
+    search = best.search, 
+    call = match.call()
+  )
+}
 
+# perform a single search given a graph which is represented by an adjecency matrix
 gm.search = function(table, adjm, forward, backward, score) {
   
   # XXX hack to explicit cast adjm to be an adjeceny matrix
@@ -37,11 +70,21 @@ gm.search = function(table, adjm, forward, backward, score) {
   # bets neighbor score
   best.neighbor <- neighbor.scores[,which.min(neighbor.scores[2,])]
   
-  # if a neighbor has a better score, recurse on it!
+  # recurse if a neighbor has a better score or stop otherwise
   if (best.neighbor$score < current.score) {
+    
+    # some neighbor has a better score, recurse on it!
     gm.search(table, best.neighbor$adjm, forward, backward, score)
+  
   } else {
-    adjm  # DONE! return current model
+    
+    # DONE! return current model
+    list(
+      model = graph.find.cliques(c(), 1:nrow(adjm), c(), adjm, list()),
+      score = current.score,
+      trace = NULL, # XXX to do
+      call = match.call()
+    )
   }  
 }
 
@@ -74,7 +117,7 @@ gm.score <- function(table, adjm, score) {
   cliques <- graph.find.cliques(c(), 1:nrow(adjm), c(), adjm, list())
   
   # log linear
-  model <- loglin(table, cliques, print=T, iter=100)
+  model <- loglin(table, cliques, print=F, iter=100)
   
   # score AIC or BIC
   if (score == "aic") gm.score.aic(table, model) else gm.score.bic(table, model)
@@ -113,8 +156,10 @@ graph.edge.flip <- function(adjm, edge, forward, backward) {
   exists <- adjm[edge[[1]],edge[[2]]] == 1
   
   # remove or add the current edge from the adjeceny matrix by flipping the bit
+  # because the matrix is symmetric, we must do this on 2 positions.
   if ((forward && !exists) || (backward && exists)) {
     adjm[edge[[1]],edge[[2]]] = 1 - exists
+    adjm[edge[[2]],edge[[1]]] = 1 - exists
   } 
   
   # return a (possibly modified) adjecency matrix
@@ -158,7 +203,7 @@ graph.find.cliques <- function (R,P,X,graph,cliques) {
         R.new <- union(R,P[i])
         P.new <- intersect(P.temp,neighbors(graph,P[i]))
         X.new <- intersect(X,neighbors(graph,P[i]))
-        cliques <- c(cliques,find.cliques(R.new,P.new,X.new,graph,list()))
+        cliques <- c(cliques,graph.find.cliques(R.new,P.new,X.new,graph,list()))
         X <- union(X,P[i])}
     }}
   cliques
