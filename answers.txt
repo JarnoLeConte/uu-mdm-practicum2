@@ -1,8 +1,14 @@
-answers part 2:
+--------------------------------------------------------
+Answers part 2
 
+--------------------------------------------------------
 (a) 126758
+
+--------------------------------------------------------
 (b) 9∗2∗2∗2∗3∗6∗4∗3∗5∗2=155520 number of cells
     8*1*1*1*2*5*3*2*4*1=1920 number of parameters
+
+--------------------------------------------------------
 (c) 
 
 > gm.restart(nstart=1, prob=0, seed=2, table(rhc.dat), forward=T, backward=T, score="bic")
@@ -36,12 +42,17 @@ $model[[8]]
 $score
 [1] 15990.19
 
+Independance graph is in graph-c.pdf.
 
-(d) gender ⊥ income | ninsclas 
+--------------------------------------------------------
+(d) 
+
+    gender ⊥ income | ninsclas 
     Which means that gender and income are independent given ninclas. Which means that when you pick some value for ninclas then gender and income are independent. Some other formulation is that gender and income looks related but that the reason is ninclas.
     If you are interested in predicting whether or not someone survives, you must look at the direct dependencies of the variable 'death', which means that it depends on cancer status (ca) and age.
 	
 
+--------------------------------------------------------
 (e) 
 
 > gm.restart(nstart=1, prob=1, seed=2, table(rhc.dat), forward=T, backward=T, score="bic")
@@ -77,7 +88,9 @@ $search$score
 Results:
 There are more dependencies between the different variables. This will give a better model with better score.
 
+Independance graph is in graph-e.pdf.
 
+--------------------------------------------------------
 (f)
 
 > gm.restart(nstart=1, prob=0, seed=2, table(rhc.dat), forward=T, backward=T, score="aic") 
@@ -205,8 +218,9 @@ $call
 gm.restart(nstart = 1, prob = 1, seed = 2, table = table(rhc.dat), 
     forward = T, backward = T, score = "aic")
 
+The models are not the same.
 
-
+--------------------------------------------------------
 (g)
 
 AIC(M) = dev(M) + 2 × dim(M),
@@ -218,6 +232,7 @@ Since 8.65 > 2 the BIC scoring formula favours models with fewer parameters more
 AIC formula. This results in the BIC formula finding a less complex formula than
 the AIC.
 
+--------------------------------------------------------
 (h) We have tried several combinations of input parameters, but we did not obtain better results than already given above. We noticed that around the probability of 0.5 there were no neighbor models which satisfy the chordal constraint. 
 
 
