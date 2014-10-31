@@ -2,7 +2,9 @@ answers part 2:
 
 (a) 126758
 (b) 
-(c)
+(c) 
+
+> gm.restart(nstart=1, prob=0, seed=2, table(rhc.dat), forward=T, backward=T, score="bic")
 
 $model
 $model[[1]]
@@ -34,4 +36,42 @@ $score
 [1] 15990.19
 
 
-(d) 
+(d) gender ⊥ income | ninsclas 
+    Which means that gender and income are independent given ninclas. Which means that when you pick some value for ninclas then gender and income are independent. Some other formulation is that gender and income looks related but that the reason is ninclas.
+    If you are interested in predicting whether or not someone survives, you must look at the direct dependencies of the variable 'death', which means that it depends on cancer status (ca) and age.
+	
+
+(e) 
+
+> gm.restart(nstart=1, prob=1, seed=2, table(rhc.dat), forward=T, backward=T, score="bic")
+
+$search$model[[1]]
+[1] 7 6
+
+$search$model[[2]]
+[1] 4 3
+
+$search$model[[3]]
+[1]  3  2 10
+
+$search$model[[4]]
+[1] 3 2 9
+
+$search$model[[5]]
+[1] 3 2 8
+
+$search$model[[6]]
+[1] 3 1 8
+
+$search$model[[7]]
+[1]  5  2 10
+
+$search$model[[8]]
+[1] 5 2 6
+
+
+$search$score
+[1] 19054.53
+
+Results:
+There are more dependencies between the different variables. This will give a better model with with better score.

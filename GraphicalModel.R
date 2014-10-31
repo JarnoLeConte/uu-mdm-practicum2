@@ -228,3 +228,15 @@ testRHC <- function() {
   gm.restart(nstart=1, prob=0, seed=2, table(rhc.dat), forward=T, backward=T, score="bic") 
 }
 
+testRHC2 <- function() {
+  
+  #src <- "/edu/mdm/mdm2/uu-mdm-practicum2/rhc-small.txt" # Mathijs
+  src <- "/Users/Jarno/dev/school/mdm/uu-mdm-practicum2/rhc-small.txt" # Jarno
+  
+  # observed data
+  rhc.dat <- read.csv(src, header=T)
+  
+  # start search
+  gm.restart(nstart=1, prob=1, seed=2, table(rhc.dat), forward=T, backward=T, score="bic") 
+}
+
