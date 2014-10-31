@@ -67,16 +67,9 @@ gm.search = function(table, adjm, forward, backward, score) {
     
     # append step description to trace.
     diff <- best.neighbor$adjm - adjm;
-    diff.indices <- which(as.matrix(diff)==1, arr.ind = T)
-    message <- character();
-    if (sum(diff) > 0) {
-      message <- "Added: "    
-    } else {
-      message <- "Removed: "
-    }    
-    
-    message <- paste(message, diff.indices[1], " - ", diff.indices[2], " (score= ", best.neighbor$score, ")")
-    res$trace <- rbind(message, res$trace)
+    diff.indices <- which(as.matrix(diff)!=0, arr.ind = T)
+    res$trace <- rbind(c(sum(diff) > 0, diff.indices[1], diff.indices[2], best.neighbor$score), res$trace)
+    colnames(res$trace) <- c("forward", "start", "end", "score")
     
     res
     
@@ -86,7 +79,7 @@ gm.search = function(table, adjm, forward, backward, score) {
     list(
       model = graph.find.cliques(adjm),
       score = current.score,
-      trace = data.frame(test=character(), stringsAsFactors=FALSE),
+      trace = NULL, 
       call = match.call()
     )
   }  
