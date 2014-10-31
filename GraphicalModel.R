@@ -66,7 +66,6 @@ gm.restart = function(nstart, prob, seed, table, forward, backward, score) {
 #
 # Returns:
 #   Undirected graphical model.
-
 gm.search = function(table, adjm, forward, backward, score) {
   
   # XXX hack to explicit cast adjm to be an adjeceny matrix
@@ -114,7 +113,15 @@ gm.search = function(table, adjm, forward, backward, score) {
   }  
 }
 
-# generate neighbor models by adding or removing edges to the given graph
+# Generate neighbor models by adding or removing edges to the given graph
+#
+# Args:
+#   adjm: Adjacency matrix.
+#   forward : Adding edges is allowed.
+#   backward : Removing edges is allowed.
+#
+# Returns:
+#   List of adjeceny matrices
 gm.neighbors <- function(adjm, forward, backward) {
   
   # determine which edges need to be considered in order to create new neighbor models. 
@@ -136,7 +143,15 @@ gm.neighbors <- function(adjm, forward, backward) {
   neighbors
 }
 
-# calculate log linear model and score by AIC or BIC
+# Calculate log linear model and score by AIC or BIC
+#
+# Args:
+#   table: Table of observed counts.
+#   adjm: Adjacency matrix.
+#   score : AIC or BIC
+#
+# Returns:
+#   AIC or BIC score
 gm.score <- function(table, adjm, score) { 
   
   # find cliques
@@ -149,7 +164,14 @@ gm.score <- function(table, adjm, score) {
   if (score == "aic") gm.score.aic(table, model) else gm.score.bic(table, model)
 }
 
-# calculate AIC score of a model
+# Calculate AIC score of a model
+#
+# Args:
+#   table: Table of observed counts.
+#   model: Results from loglin
+#
+# Returns:
+#   AIC score
 gm.score.aic <- function(table, model) {
   deviance <- model$lrt          # deviance
 
@@ -159,7 +181,14 @@ gm.score.aic <- function(table, model) {
   deviance + 2 * uterms          # AIC
 }
 
-# calculate BIC score of a model
+# Calculate BIC score of a model
+#
+# Args:
+#   table: Table of observed counts.
+#   model: Results from loglin
+#
+# Returns:
+#   BIC score
 gm.score.bic <- function(table, model) {
   deviance <- model$lrt          # deviance
   
@@ -178,10 +207,19 @@ gm.score.bic <- function(table, model) {
 # igraph library
 library(igraph)
 
-# modify the given edge by adding or removing it from the adjeceny matrix.
+# Modify the given edge by adding or removing it from the adjeceny matrix.
 # adding the edge is only be done when the forward flag is True
 # removing the edge is only be done when the backward flag is True
 # if the flag don't matches, the original adjeceny matrix is returned
+#
+# Args:
+#   adjm: Adjacency matrix.
+#   edge: c(i,j) where i and j are column and row indicies
+#   forward : Adding edges is allowed.
+#   backward : Removing edges is allowed.
+#
+# Returns:
+#   Adjeceny matrix
 graph.edge.flip <- function(adjm, edge, forward, backward) {
   
   # check if edge already exists in the graph
@@ -198,8 +236,14 @@ graph.edge.flip <- function(adjm, edge, forward, backward) {
   adjm
 }
 
-# check if the graph is chordal
+# Check if the graph is chordal
 # i.e. check absence of chordless cycles with length > 3
+#
+# Args:
+#   adjm: Adjacency matrix.
+#
+# Returns:
+#   Boolean, indicating if the graph is chordal
 graph.is.chordal <- function(adjm) {
   
   # transform adjeceny matrix to real graph
@@ -209,6 +253,13 @@ graph.is.chordal <- function(adjm) {
   is.chordal(graph)$chordal  
 }
 
+# Find cliques in the graph
+#
+# Args:
+#   adjm: Adjacency matrix.
+#
+# Returns:
+#   List of cliques
 graph.find.cliques = function(adjm) {
   
   # transform adjeceny matrix to real graph
