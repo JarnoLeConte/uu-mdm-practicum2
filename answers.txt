@@ -218,7 +218,7 @@ Since 8.65 > 2 the BIC scoring formula favours models with fewer parameters more
 AIC formula. This results in the BIC formula finding a less complex formula than
 the AIC.
 
-(h) We have tried several combinations of input parameters, but we not obtained better results than already given above. We noticed that around the probability of 0.5 their couldn't be found neighbor models which satisfy the chordal constraint. 
+(h) We have tried several combinations of input parameters, but we did not obtain better results than already given above. We noticed that around the probability of 0.5 there were no neighbor models which satisfy the chordal constraint. 
 
 
 
