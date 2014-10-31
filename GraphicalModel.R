@@ -1,13 +1,31 @@
+#
+# Data Mining 2014
+# Assignment 2: Graphical Modeling
+#
+# Jarno Le Conte (3725154)
+# Mathijs Baaijens (3542068)
+#
 
-
-# call gm.search nstart times with different initial matrices
-# this will give reliable results instead of calling gm.search once.
+# Learns an undirected graphical model from the input data. Restarts the search multiple
+# times with random starting models to prevent getting stuck in local minima.
+#
+# Args:
+#   nstart: Number of times to restart the search.
+#   prob: Probability of an edge being present in an initial random model.
+#   seed: Random number generator seed.
+#   table: Table of observed counts.
+#   adjm: Adjacency matrix.
+#   forward : Adding edges is allowed.
+#   backward : Removing edges is allowed.
+#   score : Scoring model.
+#
+# Returns:
+#   Undirected graphical model.
 gm.restart = function(nstart, prob, seed, table, forward, backward, score) {
   
-  # col/row size
   size <- length(dim(table))
   
-  # generate symmetric matrix with initial edges given by the probability 'prob'
+  # generate symmetric matrix with initial edges given by the probability 'prob'.
   matrix.rand <- function(i) {
     set.seed(seed + i)
     elms <- sample(c(0,1), size=size*size, replace=T, prob=c(1-prob, prob))
@@ -18,26 +36,37 @@ gm.restart = function(nstart, prob, seed, table, forward, backward, score) {
   }
   
   # single call to gm.search by passing a new generated graph, which is represented 
-  # by an adjeceny matrix representing the initial edges
+  # by an adjeceny matrix representing the initial edges.
   search <- function(i) {
     adjm <- matrix.rand(i)
     gm.search(table, adjm, forward, backward, score)
   }
   
-  # multiple calls to gm.search, each time with a new generated matrix
+  # multiple calls to gm.search, each time with a new generated matrix.
   searches <- sapply(1:nstart, search)
   
-  # find best search
+  # find best search.
   best.search <- searches[,which.min(searches[2,])]
   
-  # return best search
+  # return best search.
   list(
     search = best.search, 
     call = match.call()
   )
 }
 
-# perform a single search given a graph which is represented by an adjecency matrix
+# Learns an undirected graphical model from the input data.
+#
+# Args:
+#   table: Table of observed counts.
+#   adjm: Adjacency matrix.
+#   forward : Adding edges is allowed.
+#   backward : Removing edges is allowed.
+#   score : Scoring model.
+#
+# Returns:
+#   Undirected graphical model.
+
 gm.search = function(table, adjm, forward, backward, score) {
   
   # XXX hack to explicit cast adjm to be an adjeceny matrix
