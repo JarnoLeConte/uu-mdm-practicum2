@@ -1,16 +1,19 @@
 # igraph library
 library(igraph)
 
-# observed data model
+# observed data (care, survival, clinic)
 data <- c(3,17,4,2,176,197,293,23)
 margin <- c(2,2,2)
 arr <- array(data, margin)
 model <- as.table(arr)
 
+# oberved data (coronary)
+coronary.dat <- read.table("/Users/Jarno/dev/school/mdm/uu-mdm-practicum2/coronary.txt",header=T)
+model <- table(coronary.dat)
 
 # test search
 test <- function() {  
-  gm.restart(5, 0.5, 2, model, forward=T, backward=T, score="aic") 
+  gm.restart(1, 0.5, 2, model, forward=T, backward=T, score="bic") 
 } 
 
 # call gm.search nstart times with different initial matrices
@@ -25,7 +28,8 @@ gm.restart = function(nstart, prob, seed, table, forward, backward, score) {
     set.seed(seed + i)
     elms <- sample(c(0,1), size=size*size, replace=T, prob=c(1-prob, prob))
     m <- matrix(elms, size, size)
-    m[upper.tri(m)] <- m[lower.tri(m)]
+    ind <- lower.tri(m) 
+    m[ind] <- t(m)[ind]
     m
   }
   
@@ -80,7 +84,7 @@ gm.search = function(table, adjm, forward, backward, score) {
     
     # DONE! return current model
     list(
-      model = graph.find.cliques(c(), 1:nrow(adjm), c(), adjm, list()),
+      model = graph.find.cliques(adjm),
       score = current.score,
       trace = NULL, # XXX to do
       call = match.call()
@@ -114,7 +118,7 @@ gm.neighbors <- function(adjm, forward, backward) {
 gm.score <- function(table, adjm, score) { 
   
   # find cliques
-  cliques <- graph.find.cliques(c(), 1:nrow(adjm), c(), adjm, list())
+  cliques <- graph.find.cliques(adjm)
   
   # log linear
   model <- loglin(table, cliques, print=F, iter=100)
@@ -177,37 +181,11 @@ graph.is.chordal <- function(adjm) {
   is.chordal(graph)$chordal  
 }
 
-# given code to find cliques in the graph
-graph.find.cliques <- function (R,P,X,graph,cliques) {
+graph.find.cliques = function(adjm) {
   
-  # helper function
-  neighbors <- function (graph,node) 
-  {
-    nnodes <- dim(graph)[2]
-    (1:nnodes)[graph[node,]==1]
-  }
+  # transform adjeceny matrix to real graph
+  graph <- graph.adjacency(adjm, mode="undirected")
   
-  # helper function
-  post.process <- function (cliques) 
-  {
-    unique(lapply(cliques,sort))
-  }
-  
-  if (length(P)==0 & length(X)==0) {cliques <- list(R)}
-  else {
-    pivot <- P[sample(length(P),1)]
-    for(i in 1:length(P)){
-      pivot.nb <- neighbors(graph,pivot)
-      if(!is.element(P[i],pivot.nb)){
-        P.temp <- setdiff(P,P[i])
-        R.new <- union(R,P[i])
-        P.new <- intersect(P.temp,neighbors(graph,P[i]))
-        X.new <- intersect(X,neighbors(graph,P[i]))
-        cliques <- c(cliques,graph.find.cliques(R.new,P.new,X.new,graph,list()))
-        X <- union(X,P[i])}
-    }}
-  cliques
+  # cliques in the graph
+  maximal.cliques(graph)
 }
-
-
-
