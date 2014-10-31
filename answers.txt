@@ -204,3 +204,12 @@ $call
 gm.restart(nstart = 1, prob = 1, seed = 2, table = table(rhc.dat), 
     forward = T, backward = T, score = "aic")
 
+
+
+(g) edge staat voor één of méér u-terms ????
+
+
+(h) 
+
+
+

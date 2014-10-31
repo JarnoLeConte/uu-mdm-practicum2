@@ -261,7 +261,7 @@ testRHC3 <- function() {
 }
 
 testRHC4 <- function() {
-  gm.restart(nstart=1, prob=1, seed=2, table(rhc.dat), forward=T, backward=T, score="aic") 
+  gm.restart(nstart=3, prob=0.2, seed=2, table(rhc.dat), forward=T, backward=T, score="bic") 
 }
 
 
