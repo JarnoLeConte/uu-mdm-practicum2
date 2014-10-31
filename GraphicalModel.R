@@ -60,7 +60,7 @@ gm.search = function(table, adjm, forward, backward, score) {
     best.neighbor <- neighbor.scores[,which.min(neighbor.scores[2,])]
   
   # recurse if a neighbor has a better score or stop otherwise
-  if (length(neighbors) && best.neighbor$score < current.score) {
+  if (length(neighbors) > 0 && best.neighbor$score < current.score) {
     
     # some neighbor has a better score, recurse on it!
     res <- gm.search(table, best.neighbor$adjm, forward, backward, score)
@@ -232,6 +232,6 @@ testRHC <- function() {
   rhc.dat <- read.csv(src, header=T)
   
   # start search
-  gm.restart(nstart=5, prob=0.1, seed=2, table(rhc.dat), forward=T, backward=T, score="bic") 
+  gm.restart(nstart=1, prob=0, seed=2, table(rhc.dat), forward=T, backward=T, score="bic") 
 }
 
