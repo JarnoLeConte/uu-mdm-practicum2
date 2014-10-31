@@ -210,7 +210,7 @@ gm.restart(nstart = 1, prob = 1, seed = 2, table = table(rhc.dat),
 (g) edge staat voor één of méér u-terms ????
 
 
-(h) 
+(h) We have tried several combinations of input parameters, but we not obtained better results than already given above. We noticed that around the probability of 0.5 their couldn't be found neighbor models which satisfy the chordal constraint. 
 
 
 
