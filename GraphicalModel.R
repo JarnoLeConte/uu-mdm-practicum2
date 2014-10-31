@@ -194,49 +194,45 @@ graph.find.cliques = function(adjm) {
 # TEST #
 ########
 
+# observed data (care, survival, clinic)
+data <- c(3,17,4,2,176,197,293,23)
+a <- array(data, c(2,2,2))
+
+#src1 <- "/edu/mdm/mdm2/uu-mdm-practicum2/coronary.txt" # Mathijs
+src1 <- "/Users/Jarno/dev/school/mdm/uu-mdm-practicum2/coronary.txt" # Jarno
+
+# observed data
+coronary.dat <- read.table(src1, header=T)
+
+#src2 <- "/edu/mdm/mdm2/uu-mdm-practicum2/rhc-small.txt" # Mathijs
+src2 <- "/Users/Jarno/dev/school/mdm/uu-mdm-practicum2/rhc-small.txt" # Jarno
+
+# observed data
+rhc.dat <- read.csv(src2, header=T)
+
+
 testCare <- function() {
-  
-  # observed data (care, survival, clinic)
-  data <- c(3,17,4,2,176,197,293,23)
-  a <- array(data, c(2,2,2))
-  
-  # start search
   gm.restart(nstart=5, prob=0.5, seed=2, as.table(a), forward=T, backward=T, score="aic") 
 }
 
-testCoronary <- function() {
-  
-  #src <- "/edu/mdm/mdm2/uu-mdm-practicum2/coronary.txt" # Mathijs
-  src <- "/Users/Jarno/dev/school/mdm/uu-mdm-practicum2/coronary.txt" # Jarno
-  
-  # observed data
-  coronary.dat <- read.table(src, header=T)
-  
-  # start search
+testCoronary <- function() {  
   gm.restart(nstart=5, prob=0.5, seed=2, table(coronary.dat), forward=T, backward=T, score="bic") 
 }
 
 testRHC <- function() {
-  
-  #src <- "/edu/mdm/mdm2/uu-mdm-practicum2/rhc-small.txt" # Mathijs
-  src <- "/Users/Jarno/dev/school/mdm/uu-mdm-practicum2/rhc-small.txt" # Jarno
-  
-  # observed data
-  rhc.dat <- read.csv(src, header=T)
-  
-  # start search
   gm.restart(nstart=1, prob=0, seed=2, table(rhc.dat), forward=T, backward=T, score="bic") 
 }
 
 testRHC2 <- function() {
-  
-  #src <- "/edu/mdm/mdm2/uu-mdm-practicum2/rhc-small.txt" # Mathijs
-  src <- "/Users/Jarno/dev/school/mdm/uu-mdm-practicum2/rhc-small.txt" # Jarno
-  
-  # observed data
-  rhc.dat <- read.csv(src, header=T)
-  
-  # start search
   gm.restart(nstart=1, prob=1, seed=2, table(rhc.dat), forward=T, backward=T, score="bic") 
 }
+
+testRHC3 <- function() {
+  gm.restart(nstart=1, prob=0, seed=2, table(rhc.dat), forward=T, backward=T, score="aic") 
+}
+
+testRHC4 <- function() {
+  gm.restart(nstart=1, prob=1, seed=2, table(rhc.dat), forward=T, backward=T, score="aic") 
+}
+
 
