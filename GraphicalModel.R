@@ -7,9 +7,15 @@ margin <- c(2,2,2)
 arr <- array(data, margin)
 model <- as.table(arr)
 
-# oberved data (coronary)
-coronary.dat <- read.table("/Users/Jarno/dev/school/mdm/uu-mdm-practicum2/coronary.txt",header=T)
+# oberved data (coronary) 
+# XXX uncomment your dataset:
+
+#coronary.dat <- read.table("/edu/mdm/mdm2/uu-mdm-practicum2/coronary.txt",header=T)
+#coronary.dat <- read.table("/Users/Jarno/dev/school/mdm/uu-mdm-practicum2/coronary.txt",header=T)
+
 model <- table(coronary.dat)
+
+
 
 # test search
 test <- function() {  
@@ -71,22 +77,37 @@ gm.search = function(table, adjm, forward, backward, score) {
     list(adjm = adjm, score = gm.score(table, adjm, score))
   });
 
-  # bets neighbor score
+  # best neighbor score
   best.neighbor <- neighbor.scores[,which.min(neighbor.scores[2,])]
   
   # recurse if a neighbor has a better score or stop otherwise
   if (best.neighbor$score < current.score) {
     
     # some neighbor has a better score, recurse on it!
-    gm.search(table, best.neighbor$adjm, forward, backward, score)
-  
-  } else {
+    res <- gm.search(table, best.neighbor$adjm, forward, backward, score)
     
+    # append step description to trace.
+    diff <- best.neighbor$adjm - adjm;
+    diff.indices <- which(as.matrix(diff)==1, arr.ind = T)
+    message <- character();
+    if (sum(diff) > 0) {
+      message <- "Added: "    
+    } else {
+      message <- "Removed: "
+    }    
+    
+    message <- paste(message, diff.indices[1], " - ", diff.indices[2], " (score= ", best.neighbor$score, ")")
+    res$trace <- rbind(message, res$trace)
+    
+    res
+    
+  } else {
+      
     # DONE! return current model
     list(
       model = graph.find.cliques(adjm),
       score = current.score,
-      trace = NULL, # XXX to do
+      trace = data.frame(test=character(), stringsAsFactors=FALSE),
       call = match.call()
     )
   }  

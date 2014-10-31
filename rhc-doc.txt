@@ -1,0 +1,28 @@
+The data set contains data on 5,735 critically ill adult patients receiving care in an Intensive Care Unit (ICU)
+for 1 of 9 prespecified disease categories. The data was collected in five US teaching hospitals between 1989 and 1994.
+
+The objective of the original study that used (a superset of) this data was to examine the association between
+the use of right heart catheterization (RHC) during the first 24 hours of care in the ICU and subsequent survival,
+length of stay, intensity of care and cost of care. 
+
+This subset contains the following variables:
+
+1. cat1: disease category (9 different values)
+2. death: did the patient die within 180 days after admission?
+3. swang1: was right heart catheterization performed within first 24 hours?
+4. gender: male/female
+5. race: black/white/other
+6. ninsclas: type of medical insurance of patient (six different values)
+7. income: income of patient, divided into four categories
+8. ca: cancer status (yes/no/metastatic)
+9. age: age of patient divided into 5 categories
+10. meanbp1: mean blood pressure of patient divided into 2 categories
+
+
+Original publication:
+
+The effectiveness of right heart catheterization in the initial care of critically ill patients. 
+Connors AF Jr, Speroff T, Dawson NV, Thomas C, Harrell FE Jr, Wagner D, Desbiens N, Goldman L, Wu AW, Califf RM, Fulkerson WJ Jr, Vidaillet H, Broste S, Bellamy P, Lynn J, Knaus WA.
+Department of Medicine, Case Western Reserve University at MetroHealth Medical Center, Cleveland, Ohio, USA.
+
+Journal of the American Medical Association, September 18, 1996, Vol 276, No. 11.
