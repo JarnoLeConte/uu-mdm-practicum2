@@ -1,26 +1,4 @@
-# igraph library
-library(igraph)
 
-# observed data (care, survival, clinic)
-data <- c(3,17,4,2,176,197,293,23)
-margin <- c(2,2,2)
-arr <- array(data, margin)
-model <- as.table(arr)
-
-# oberved data (coronary) 
-# XXX uncomment your dataset:
-
-#coronary.dat <- read.table("/edu/mdm/mdm2/uu-mdm-practicum2/coronary.txt",header=T)
-#coronary.dat <- read.table("/Users/Jarno/dev/school/mdm/uu-mdm-practicum2/coronary.txt",header=T)
-
-model <- table(coronary.dat)
-
-
-
-# test search
-test <- function() {  
-  gm.restart(1, 0.5, 2, model, forward=T, backward=T, score="bic") 
-} 
 
 # call gm.search nstart times with different initial matrices
 # this will give reliable results instead of calling gm.search once.
@@ -76,12 +54,13 @@ gm.search = function(table, adjm, forward, backward, score) {
   neighbor.scores <- sapply(neighbors, function(adjm) { 
     list(adjm = adjm, score = gm.score(table, adjm, score))
   });
-
+  
   # best neighbor score
-  best.neighbor <- neighbor.scores[,which.min(neighbor.scores[2,])]
+  if (length(neighbors) > 0)
+    best.neighbor <- neighbor.scores[,which.min(neighbor.scores[2,])]
   
   # recurse if a neighbor has a better score or stop otherwise
-  if (best.neighbor$score < current.score) {
+  if (length(neighbors) && best.neighbor$score < current.score) {
     
     # some neighbor has a better score, recurse on it!
     res <- gm.search(table, best.neighbor$adjm, forward, backward, score)
@@ -170,6 +149,12 @@ gm.score.bic <- function(table, model) {
 }
 
 
+#########
+# GRAPH #
+#########
+
+# igraph library
+library(igraph)
 
 # modify the given edge by adding or removing it from the adjeceny matrix.
 # adding the edge is only be done when the forward flag is True
@@ -210,3 +195,43 @@ graph.find.cliques = function(adjm) {
   # cliques in the graph
   maximal.cliques(graph)
 }
+
+
+########
+# TEST #
+########
+
+testCare <- function() {
+  
+  # observed data (care, survival, clinic)
+  data <- c(3,17,4,2,176,197,293,23)
+  a <- array(data, c(2,2,2))
+  
+  # start search
+  gm.restart(nstart=5, prob=0.5, seed=2, as.table(a), forward=T, backward=T, score="aic") 
+}
+
+testCoronary <- function() {
+  
+  #src <- "/edu/mdm/mdm2/uu-mdm-practicum2/coronary.txt" # Mathijs
+  src <- "/Users/Jarno/dev/school/mdm/uu-mdm-practicum2/coronary.txt" # Jarno
+  
+  # observed data
+  coronary.dat <- read.table(src, header=T)
+  
+  # start search
+  gm.restart(nstart=5, prob=0.5, seed=2, table(coronary.dat), forward=T, backward=T, score="bic") 
+}
+
+testRHC <- function() {
+  
+  #src <- "/edu/mdm/mdm2/uu-mdm-practicum2/rhc-small.txt" # Mathijs
+  src <- "/Users/Jarno/dev/school/mdm/uu-mdm-practicum2/rhc-small.txt" # Jarno
+  
+  # observed data
+  rhc.dat <- read.csv(src, header=T)
+  
+  # start search
+  gm.restart(nstart=5, prob=0.1, seed=2, table(rhc.dat), forward=T, backward=T, score="bic") 
+}
+
