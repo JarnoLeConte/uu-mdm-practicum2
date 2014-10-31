@@ -207,8 +207,16 @@ gm.restart(nstart = 1, prob = 1, seed = 2, table = table(rhc.dat),
 
 
 
-(g) edge staat voor één of méér u-terms ????
+(g)
 
+AIC(M) = dev(M) + 2 × dim(M),
+BIC(M) = dev(M) + ln N × dim(M).
+
+N = total number observations = ln(5735) = 8.654
+
+Since 8.65 > 2 the BIC scoring formula favours models with fewer parameters more than the
+AIC formula. This results in the BIC formula finding a less complex formula than
+the AIC.
 
 (h) 
 
