@@ -1,0 +1,389 @@
+Vraag A
+=======
+...
+
+
+Vraag B
+=======
+...
+
+
+Vraag C 
+=======
+
+> testRHC()
+$search
+$search$model
+$search$model[[1]]
+[1] 1 8
+
+$search$model[[2]]
+[1] 1 9
+
+$search$model[[3]]
+[1]  1  3 10
+
+$search$model[[4]]
+[1] 2 8
+
+$search$model[[5]]
+[1] 2 9
+
+$search$model[[6]]
+[1]  2 10
+
+$search$model[[7]]
+[1] 3 6
+
+$search$model[[8]]
+[1] 4 6
+
+$search$model[[9]]
+[1] 5 6
+
+$search$model[[10]]
+[1] 6 7
+
+$search$model[[11]]
+[1] 6 8
+
+$search$model[[12]]
+[1] 6 9
+
+$search$model[[13]]
+[1]  5 10
+
+
+$search$score
+[1] 15841.66
+
+$search$trace
+      forward start end    score
+ [1,]       1     9   6 20139.73
+ [2,]       1     8   1 18561.18
+ [3,]       1     7   6 17313.90
+ [4,]       1     3   1 16947.05
+ [5,]       1     8   2 16706.60
+ [6,]       1     6   5 16466.82
+ [7,]       1    10   3 16227.81
+ [8,]       1     9   2 16024.58
+ [9,]       1     9   1 15936.67
+[10,]       1    10   2 15899.67
+[11,]       1    10   1 15878.31
+[12,]       1    10   5 15857.81
+[13,]       1     6   4 15847.04
+[14,]       1     6   3 15843.36
+[15,]       1     8   6 15841.66
+
+$search$call
+gm.search(table = table, adjm = best.neighbor$adjm, forward = forward, 
+    backward = backward, score = score)
+
+
+$call
+gm.restart(nstart = 1, prob = 0, seed = 2, table = table(rhc.dat), 
+    forward = T, backward = T, score = "bic")
+
+
+Vraag D
+=======
+...
+
+
+
+Vraag E 
+=======
+
+> testRHC2()
+$search
+$search$model
+$search$model[[1]]
+[1]  1  3 10
+
+$search$model[[2]]
+[1] 1 8
+
+$search$model[[3]]
+[1] 2 7
+
+$search$model[[4]]
+[1] 2 8
+
+$search$model[[5]]
+[1] 2 9
+
+$search$model[[6]]
+[1]  2 10
+
+$search$model[[7]]
+[1] 3 4
+
+$search$model[[8]]
+[1] 4 6
+
+$search$model[[9]]
+[1] 5 7
+
+$search$model[[10]]
+[1] 5 9
+
+$search$model[[11]]
+[1]  5 10
+
+$search$model[[12]]
+[1] 6 7
+
+$search$model[[13]]
+[1] 6 8
+
+$search$model[[14]]
+[1] 3 9
+
+$search$model[[15]]
+[1] 6 9
+
+
+$search$score
+[1] 15850.53
+
+$search$trace
+      forward start end     score
+ [1,]       0     6   1 352418.67
+ [2,]       0     9   7 145996.05
+ [3,]       0     8   5  85022.56
+ [4,]       0     2   1  64150.58
+ [5,]       0     4   3  51172.69
+ [6,]       0     6   2  41682.01
+ [7,]       0    10   1  34213.22
+ [8,]       0    10   6  29598.23
+ [9,]       0     9   1  26137.86
+[10,]       0     7   1  23410.33
+[11,]       0     8   6  21604.37
+[12,]       0     6   5  19937.64
+[13,]       0    10   9  19036.88
+[14,]       0    10   7  18358.74
+[15,]       0     5   2  17953.09
+[16,]       0     8   3  17582.91
+[17,]       0     8   4  17231.89
+[18,]       0     5   1  16916.77
+[19,]       0     6   3  16633.86
+[20,]       0     6   4  16404.68
+[21,]       0     5   3  16269.59
+[22,]       0     5   4  16145.29
+[23,]       0     7   2  16062.76
+[24,]       0     9   8  16011.30
+[25,]       0     4   2  15969.11
+[26,]       0     3   2  15935.30
+[27,]       0     8   7  15913.10
+[28,]       0     4   1  15903.07
+[29,]       0     7   3  15897.47
+[30,]       0     7   4  15892.60
+[31,]       1     8   6  15889.27
+[32,]       0     9   4  15886.83
+[33,]       1     6   4  15876.29
+[34,]       0    10   8  15873.92
+[35,]       1    10   1  15856.19
+[36,]       0    10   4  15854.62
+[37,]       1     4   3  15851.79
+[38,]       1     7   2  15850.53
+
+$search$call
+gm.search(table = table, adjm = best.neighbor$adjm, forward = forward, 
+    backward = backward, score = score)
+
+
+$call
+gm.restart(nstart = 1, prob = 1, seed = 2, table = table(rhc.dat), 
+    forward = T, backward = T, score = "bic")
+
+
+
+
+Vraag F
+=======
+
+> testRHC3()
+$search
+$search$model
+$search$model[[1]]
+[1] 1 2 8
+
+$search$model[[2]]
+[1] 1 2 9
+
+$search$model[[3]]
+[1]  1  2 10
+
+$search$model[[4]]
+[1] 1 3 9
+
+$search$model[[5]]
+[1]  1  3 10
+
+$search$model[[6]]
+[1] 1 4 8
+
+$search$model[[7]]
+[1]  1  4 10
+
+$search$model[[8]]
+[1] 4 5 6
+
+$search$model[[9]]
+[1]  4  5 10
+
+$search$model[[10]]
+[1] 5 6 7
+
+$search$model[[11]]
+[1] 5 6 9
+
+$search$model[[12]]
+[1] 3 6 9
+
+$search$model[[13]]
+[1] 4 6 8
+
+$search$model[[14]]
+[1] 2 7
+
+
+$search$score
+[1] 14278.21
+
+$search$trace
+      forward start end    score
+ [1,]       1     9   6 19813.67
+ [2,]       1     8   1 18128.65
+ [3,]       1     7   6 16781.55
+ [4,]       1     3   1 16361.47
+ [5,]       1     6   5 16055.14
+ [6,]       1     9   1 15769.28
+ [7,]       1     8   2 15515.52
+ [8,]       1    10   3 15269.86
+ [9,]       1     9   2 15025.03
+[10,]       1    10   1 14894.94
+[11,]       1     2   1 14771.25
+[12,]       1     9   5 14678.39
+[13,]       1     7   5 14602.40
+[14,]       1     8   6 14534.46
+[15,]       1     6   4 14490.42
+[16,]       1     4   1 14446.97
+[17,]       1     6   3 14406.89
+[18,]       1    10   2 14366.82
+[19,]       1    10   5 14336.01
+[20,]       1     7   2 14314.87
+[21,]       1    10   4 14300.21
+[22,]       1     8   4 14286.40
+[23,]       1     5   4 14280.03
+[24,]       1     9   3 14278.21
+
+$search$call
+gm.search(table = table, adjm = best.neighbor$adjm, forward = forward, 
+    backward = backward, score = score)
+
+
+$call
+gm.restart(nstart = 1, prob = 0, seed = 2, table = table(rhc.dat), 
+    forward = T, backward = T, score = "aic")
+
+------ [ B ] ------
+
+> testRHC3_B()
+$search
+$search$model
+$search$model[[1]]
+[1] 1 2 8
+
+$search$model[[2]]
+[1] 1 2 9
+
+$search$model[[3]]
+[1]  1  2 10
+
+$search$model[[4]]
+[1] 2 7
+
+$search$model[[5]]
+[1] 3 6 9
+
+$search$model[[6]]
+[1] 1 3 9
+
+$search$model[[7]]
+[1]  1  3 10
+
+$search$model[[8]]
+[1] 4 5 6
+
+$search$model[[9]]
+[1] 4 6 8
+
+$search$model[[10]]
+[1] 1 4 8
+
+$search$model[[11]]
+[1]  1  4 10
+
+$search$model[[12]]
+[1]  4  5 10
+
+$search$model[[13]]
+[1] 5 6 7
+
+$search$model[[14]]
+[1] 5 6 9
+
+
+$search$score
+[1] 14278.21
+
+$search$trace
+      forward start end    score
+ [1,]       0     6   1 84115.56
+ [2,]       0     9   7 38674.81
+ [3,]       0     8   5 25399.64
+ [4,]       0     2   1 21562.78
+ [5,]       0     4   3 19231.85
+ [6,]       0     6   2 17726.38
+ [7,]       0    10   1 16645.75
+ [8,]       0    10   6 16023.37
+ [9,]       0     9   8 15626.94
+[10,]       0     5   1 15257.74
+[11,]       0     8   7 14913.67
+[12,]       0     5   3 14768.75
+[13,]       0     5   4 14654.96
+[14,]       0     7   3 14606.44
+[15,]       0    10   9 14566.45
+[16,]       0     7   4 14539.60
+[17,]       1    10   1 14508.01
+[18,]       0    10   7 14463.16
+[19,]       0     8   3 14423.01
+[20,]       0     4   1 14406.10
+[21,]       1     2   1 14381.19
+[22,]       0     3   2 14338.85
+[23,]       0     5   2 14324.17
+[24,]       0    10   8 14310.79
+[25,]       0     7   1 14301.75
+[26,]       0     4   2 14297.51
+[27,]       1     4   1 14287.88
+[28,]       0     9   4 14284.56
+[29,]       1     5   4 14278.21
+
+$search$call
+gm.search(table = table, adjm = best.neighbor$adjm, forward = forward, 
+    backward = backward, score = score)
+
+
+$call
+gm.restart(nstart = 1, prob = 1, seed = 2, table = table(rhc.dat), 
+    forward = T, backward = T, score = "aic")
+
+
+Vraag G
+=======
+...
+
+Vraag H
+=======
+...
