@@ -22,6 +22,7 @@
 # Returns:
 #   Undirected graphical model.
 gm.restart = function(nstart, prob, seed, table, forward, backward, score) {
+  print("gm.restart");
   
   size <- length(dim(table))
   
@@ -31,14 +32,15 @@ gm.restart = function(nstart, prob, seed, table, forward, backward, score) {
     elms <- sample(c(0,1), size=size*size, replace=T, prob=c(1-prob, prob))
     m <- matrix(elms, size, size)
     ind <- lower.tri(m) 
-    m[ind] <- t(m)[ind]
+    m[ind] <- t(m)[ind]  
+    m <- m - diag(size);
     m
   }
   
   # single call to gm.search by passing a new generated graph, which is represented 
   # by an adjeceny matrix representing the initial edges.
   search <- function(i) {
-    adjm <- matrix.rand(i)
+    adjm <- matrix.rand(i);
     gm.search(table, adjm, forward, backward, score)
   }
   
@@ -67,6 +69,7 @@ gm.restart = function(nstart, prob, seed, table, forward, backward, score) {
 # Returns:
 #   Undirected graphical model.
 gm.search = function(table, adjm, forward, backward, score) {
+  print("gm.search");
   
   # XXX hack to explicit cast adjm to be an adjeceny matrix
   # which will not be flatten in the apply function
@@ -105,7 +108,7 @@ gm.search = function(table, adjm, forward, backward, score) {
       
     # DONE! return current model
     list(
-      model = graph.find.cliques(adjm),
+      model = post.process(graph.find.cliques(adjm)),
       score = current.score,
       trace = NULL, 
       call = match.call()
@@ -123,6 +126,7 @@ gm.search = function(table, adjm, forward, backward, score) {
 # Returns:
 #   List of adjeceny matrices
 gm.neighbors <- function(adjm, forward, backward) {
+  print("gm.neighbors");
   
   # determine which edges need to be considered in order to create new neighbor models. 
   # Either add or remove an edge from the graph.
@@ -135,10 +139,6 @@ gm.neighbors <- function(adjm, forward, backward) {
   # filter the neighbor models which are unmodified, 
   # i.e. models which are the same a the current model 
   neighbors <- Filter(function(m) { !identical(adjm, m) }, neighbors)
-  
-  # only allow chordal graphs, so remove the models which don't satisfy this constraint
-  # i.e. graphs not containing chordless cycles of length > 3
-  neighbors <- Filter(graph.is.chordal, neighbors)
   
   neighbors
 }
@@ -153,6 +153,7 @@ gm.neighbors <- function(adjm, forward, backward) {
 # Returns:
 #   AIC or BIC score
 gm.score <- function(table, adjm, score) { 
+  print("gm.score");
   
   # find cliques
   cliques <- graph.find.cliques(adjm)
@@ -161,7 +162,10 @@ gm.score <- function(table, adjm, score) {
   model <- loglin(table, cliques, print=F, iter=100)
   
   # score AIC or BIC
-  if (score == "aic") gm.score.aic(table, model) else gm.score.bic(table, model)
+  if (score == "aic") 
+    gm.score.aic(table, model) 
+  else 
+    gm.score.bic(table, model)
 }
 
 # Calculate AIC score of a model
@@ -236,22 +240,6 @@ graph.edge.flip <- function(adjm, edge, forward, backward) {
   adjm
 }
 
-# Check if the graph is chordal
-# i.e. check absence of chordless cycles with length > 3
-#
-# Args:
-#   adjm: Adjacency matrix.
-#
-# Returns:
-#   Boolean, indicating if the graph is chordal
-graph.is.chordal <- function(adjm) {
-  
-  # transform adjeceny matrix to real graph
-  graph <- graph.adjacency(adjm, mode="undirected")
-  
-  # check absence of chordless cycles with length > 3
-  is.chordal(graph)$chordal  
-}
 
 # Find cliques in the graph
 #
@@ -261,13 +249,41 @@ graph.is.chordal <- function(adjm) {
 # Returns:
 #   List of cliques
 graph.find.cliques = function(adjm) {
-  
-  # transform adjeceny matrix to real graph
-  graph <- graph.adjacency(adjm, mode="undirected")
-  
-  # cliques in the graph
-  maximal.cliques(graph)
+  size <- dim(adjm)[1]
+  post.process(find.cliques(c(), (1:size), c(), adjm, list()))
 }
+
+find.cliques <- function (R,P,X,graph,cliques) 
+{ 
+  neighbors <- function (graph,node) 
+  {
+    nnodes <- dim(graph)[2]
+    (1:nnodes)[graph[node,]==1]
+  }
+  
+  if (length(P)==0 & length(X)==0) {cliques <- list(R)}
+  else {
+    pivot <- P[sample(length(P),1)]
+    for(i in 1:length(P)){
+      pivot.nb <- neighbors(graph,pivot)
+      if(!is.element(P[i],pivot.nb)){
+        P.temp <- setdiff(P,P[i])
+        R.new <- union(R,P[i])
+        P.new <- intersect(P.temp,neighbors(graph,P[i]))
+        X.new <- intersect(X,neighbors(graph,P[i]))
+        cliques <- c(cliques,find.cliques(R.new,P.new,X.new,graph,list()))
+        X <- union(X,P[i])}
+    }}
+  
+  cliques
+}
+
+post.process <- function (cliques) 
+{
+  unique(lapply(cliques,sort))
+}
+
+
 
 
 ########
@@ -309,6 +325,9 @@ testRHC2 <- function() {
 
 testRHC3 <- function() {
   gm.restart(nstart=1, prob=0, seed=2, table(rhc.dat), forward=T, backward=T, score="aic") 
+}
+testRHC3_B <- function() {
+  gm.restart(nstart=1, prob=1, seed=2, table(rhc.dat), forward=T, backward=T, score="aic") 
 }
 
 testRHC4 <- function() {
