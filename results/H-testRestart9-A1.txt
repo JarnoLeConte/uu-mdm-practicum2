@@ -1,0 +1,81 @@
+$search
+$search$model
+$search$model[[1]]
+[1] 2 7
+
+$search$model[[2]]
+[1] 1 2 8
+
+$search$model[[3]]
+[1] 1 2 9
+
+$search$model[[4]]
+[1]  1  2 10
+
+$search$model[[5]]
+[1] 1 3 4
+
+$search$model[[6]]
+[1] 3 7
+
+$search$model[[7]]
+[1] 1 3 9
+
+$search$model[[8]]
+[1]  1  3 10
+
+$search$model[[9]]
+[1] 4 5 6
+
+$search$model[[10]]
+[1] 5 6 7
+
+$search$model[[11]]
+[1] 5 6 9
+
+$search$model[[12]]
+[1]  5  6 10
+
+$search$model[[13]]
+[1] 4 6 8
+
+$search$model[[14]]
+[1] 1 4 8
+
+
+$search$score
+[1] 14263.97
+
+$search$trace
+      forward start end    score
+ [1,]       1     9   6 17498.70
+ [2,]       1     8   1 15813.68
+ [3,]       1     8   2 15553.30
+ [4,]       1    10   3 15306.37
+ [5,]       1     6   5 15080.35
+ [6,]       1     2   1 14941.28
+ [7,]       1    10   1 14804.22
+ [8,]       1     9   2 14719.58
+ [9,]       1     8   6 14654.53
+[10,]       1     6   4 14610.48
+[11,]       1     4   1 14567.16
+[12,]       0     9   7 14532.83
+[13,]       1     9   5 14439.96
+[14,]       1     9   3 14408.42
+[15,]       1    10   2 14384.55
+[16,]       0     6   2 14363.02
+[17,]       1     4   3 14341.51
+[18,]       1     7   2 14320.91
+[19,]       1    10   5 14299.98
+[20,]       1     7   3 14285.46
+[21,]       1     8   4 14272.26
+[22,]       1     5   4 14263.97
+
+$search$call
+gm.search(table = table, adjm = best.neighbor$adjm, forward = forward, 
+    backward = backward, score = score)
+
+
+$call
+gm.restart(nstart = 9, prob = 0.25, seed = 2, table = table(rhc.dat), 
+    forward = T, backward = T, score = "aic")

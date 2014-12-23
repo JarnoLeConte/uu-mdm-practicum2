@@ -1,0 +1,75 @@
+$search
+$search$model
+$search$model[[1]]
+[1] 2 7
+
+$search$model[[2]]
+[1] 1 2 8
+
+$search$model[[3]]
+[1] 1 2 9
+
+$search$model[[4]]
+[1]  1  2 10
+
+$search$model[[5]]
+[1] 3 6 9
+
+$search$model[[6]]
+[1] 1 3 9
+
+$search$model[[7]]
+[1]  1  3 10
+
+$search$model[[8]]
+[1] 4 5 6
+
+$search$model[[9]]
+[1] 4 6 8
+
+$search$model[[10]]
+[1] 1 4 8
+
+$search$model[[11]]
+[1]  1  4 10
+
+$search$model[[12]]
+[1]  4  5 10
+
+$search$model[[13]]
+[1] 5 6 7
+
+$search$model[[14]]
+[1] 5 6 9
+
+
+$search$score
+[1] 14278.21
+
+$search$trace
+      forward start end    score
+ [1,]       1     7   6 15611.21
+ [2,]       1     3   1 15240.98
+ [3,]       1    10   3 14998.89
+ [4,]       1     9   2 14759.21
+ [5,]       1    10   1 14628.31
+ [6,]       1     2   1 14504.32
+ [7,]       1     8   6 14448.05
+ [8,]       1     4   1 14402.19
+ [9,]       1    10   2 14359.44
+[10,]       0     7   3 14328.25
+[11,]       0     8   3 14305.34
+[12,]       1     5   4 14299.17
+[13,]       0     5   2 14295.76
+[14,]       1     7   2 14289.32
+[15,]       0     7   1 14280.03
+[16,]       1     9   3 14278.21
+
+$search$call
+gm.search(table = table, adjm = best.neighbor$adjm, forward = forward, 
+    backward = backward, score = score)
+
+
+$call
+gm.restart(nstart = 3, prob = 0.25, seed = 2, table = table(rhc.dat), 
+    forward = T, backward = T, score = "aic")

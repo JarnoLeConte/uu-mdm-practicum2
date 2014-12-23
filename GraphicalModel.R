@@ -294,14 +294,14 @@ post.process <- function (cliques)
 data <- c(3,17,4,2,176,197,293,23)
 a <- array(data, c(2,2,2))
 
-#src1 <- "/edu/mdm/mdm2/uu-mdm-practicum2/coronary.txt" # Mathijs
-src1 <- "/Users/Jarno/dev/school/mdm/uu-mdm-practicum2/coronary.txt" # Jarno
+#src1 <- "/edu/mdm/mdm2/uu-mdm-practicum2/data/coronary.txt" # Mathijs
+src1 <- "/Users/Jarno/dev/school/mdm/uu-mdm-practicum2/data/coronary.txt" # Jarno
 
 # observed data
 coronary.dat <- read.table(src1, header=T)
 
-#src2 <- "/edu/mdm/mdm2/uu-mdm-practicum2/rhc-small.txt" # Mathijs
-src2 <- "/Users/Jarno/dev/school/mdm/uu-mdm-practicum2/rhc-small.txt" # Jarno
+#src2 <- "/edu/mdm/mdm2/uu-mdm-practicum2/data/rhc-small.txt" # Mathijs
+src2 <- "/Users/Jarno/dev/school/mdm/uu-mdm-practicum2/data/rhc-small.txt" # Jarno
 
 # observed data
 rhc.dat <- read.csv(src2, header=T)
@@ -330,8 +330,62 @@ testRHC3_B <- function() {
   gm.restart(nstart=1, prob=1, seed=2, table(rhc.dat), forward=T, backward=T, score="aic") 
 }
 
-testRHC4 <- function() {
-  gm.restart(nstart=3, prob=0.2, seed=2, table(rhc.dat), forward=T, backward=T, score="bic") 
+testA1 <- function() {
+  gm.restart(nstart=1, prob=0.25, seed=2, table(rhc.dat), forward=T, backward=T, score="aic") 
+}
+testA2 <- function() {
+  gm.restart(nstart=1, prob=0.5, seed=2, table(rhc.dat), forward=T, backward=T, score="aic") 
+}
+testA3 <- function() {
+  gm.restart(nstart=1, prob=0.75, seed=2, table(rhc.dat), forward=T, backward=T, score="aic") 
 }
 
+testRestartA1 <- function() {
+  gm.restart(nstart=3, prob=0.25, seed=2, table(rhc.dat), forward=T, backward=T, score="aic") 
+}
+testRestartA2 <- function() {
+  gm.restart(nstart=3, prob=0.5, seed=2, table(rhc.dat), forward=T, backward=T, score="aic") 
+}
+testRestartA3 <- function() {
+  gm.restart(nstart=3, prob=0.75, seed=2, table(rhc.dat), forward=T, backward=T, score="aic") 
+}
 
+testB1 <- function() {
+  gm.restart(nstart=1, prob=0.25, seed=2, table(rhc.dat), forward=T, backward=T, score="bic") 
+}
+testB2 <- function() {
+  gm.restart(nstart=1, prob=0.5, seed=2, table(rhc.dat), forward=T, backward=T, score="bic") 
+}
+testB3 <- function() {
+  gm.restart(nstart=1, prob=0.75, seed=2, table(rhc.dat), forward=T, backward=T, score="bic") 
+}
+
+testRestartB1 <- function() {
+  gm.restart(nstart=3, prob=0.25, seed=2, table(rhc.dat), forward=T, backward=T, score="bic") 
+}
+testRestartB2 <- function() {
+  gm.restart(nstart=3, prob=0.5, seed=2, table(rhc.dat), forward=T, backward=T, score="bic") 
+}
+testRestartB3 <- function() {
+  gm.restart(nstart=3, prob=0.75, seed=2, table(rhc.dat), forward=T, backward=T, score="bic") 
+}
+
+testRestartA1_extra <- function() {
+  gm.restart(nstart=9, prob=0.25, seed=2, table(rhc.dat), forward=T, backward=T, score="aic") 
+}
+testRestartA2_extra <- function() {
+  gm.restart(nstart=9, prob=0.50, seed=2, table(rhc.dat), forward=T, backward=T, score="aic") 
+}
+testRestartA3_extra <- function() {
+  gm.restart(nstart=9, prob=0.75, seed=2, table(rhc.dat), forward=T, backward=T, score="aic") 
+}
+
+testRestartB1_extra <- function() {
+  gm.restart(nstart=9, prob=0.25, seed=2, table(rhc.dat), forward=T, backward=T, score="bic") 
+}
+testRestartB2_extra <- function() {
+  gm.restart(nstart=9, prob=0.5, seed=2, table(rhc.dat), forward=T, backward=T, score="bic") 
+}
+testRestartB3_extra <- function() {
+  gm.restart(nstart=9, prob=0.75, seed=2, table(rhc.dat), forward=T, backward=T, score="bic") 
+}
